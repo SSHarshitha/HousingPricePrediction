@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- Custom CSS (Inline) -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #eaf4f4;
+            color: #333;
+        }
+        .title {
+            font-weight: 600;
+            color: #333;
+        }
+        .card {
+            border-radius: 15px;
+            background: #ffffff;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #6FB3B8;
+            color: #fff;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        .custom-btn {
+            background: linear-gradient(135deg, #6FB3B8, #A4D4D9);
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            transition: all 0.3s ease-in-out;
+        }
+        .custom-btn:hover {
+            background: linear-gradient(135deg, #A4D4D9, #6FB3B8);
+            transform: scale(1.05);
+        }
+        .form-control {
+            background-color: #f5f7fa;
+            color: #333;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+        .form-control::placeholder {
+            color: #999;
+        }
+        h3 {
+            color: #6FB3B8;
+        }
+    </style>
+
+    <title>House Price Prediction</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row justify-content-center">
+          <div class="card shadow-lg" style="width: 60%; margin-top: 100px;">
+              <div class="card-header text-center">
+                  <h1 class="title">House Price Prediction</h1>
+              </div>
+              <div class="card-body">
+                  <form method="post" accept-charset="utf-8">
+                      <div class="row">
+                          <div class="col-md-6 form-group">
+                              <label for="location"><b>Select the Location:</b></label>
+                              <select class="selectpicker form-control" id="location" name="location" required>
+                                  {% for location in locations %}
+                                     <option value="{{ location }}">{{ location }}</option>
+                                  {% endfor %}
+                              </select>
+                          </div>
+                          <div class="col-md-6 form-group">
+                              <label for="bhk"><b>Enter BHK:</b></label>
+                              <input type="text" class="form-control" id="bhk" name="bhk" placeholder="Enter BHK">
+                          </div>
+                          <div class="col-md-6 form-group">
+                              <label for="bath"><b>Enter Number of Bathrooms:</b></label>
+                              <input type="text" class="form-control" id="bath" name="bath" placeholder="Enter Number of Bathrooms">
+                          </div>
+                          <div class="col-md-6 form-group">
+                              <label for="total_sqft"><b>Enter Square Feet:</b></label>
+                              <input type="text" class="form-control" id="total_sqft" name="total_sqft" placeholder="Enter Square Feet">
+                          </div>
+                          <!-- <div class="col-md-6 form-group">
+                              <label for="balconies"><b>Enter Number of Balconies:</b></label>
+                              <input type="text" class="form-control" id="balconies" name="balconies" placeholder="Enter Number of Balconies">
+                          </div> -->
+                          <div class="col-md-12 form-group">
+                              <button class="btn btn-block custom-btn" onclick="send_data()">Predict Price</button>
+                          </div>
+                      </div>
+                  </form>
+                  <br>
+                  <div class="col-md-12" style="text-align: center">
+                      <h3><span id="prediction"></span></h3>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <script>
+        function form_handler(event) {
+           event.preventDefault();
+        }
+
+        function send_data() {
+           document.querySelector('form').addEventListener("submit", form_handler);
+           var fd = new FormData(document.querySelector('form'));
+           var xhr = new XMLHttpRequest();
+           xhr.open('POST', '/predict', true);
+           document.getElementById("prediction").innerHTML = "Wait, predicting price!...";
+           xhr.onreadystatechange = function(){
+               if(xhr.readyState == XMLHttpRequest.DONE) {
+                   document.getElementById('prediction').innerHTML = "Prediction: ₹ " + xhr.responseText;
+               }
+           };
+           xhr.onload = function(){};
+           xhr.send(fd);
+        }
+    </script>
+
+    <!-- jQuery, Popper.js, Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"></script>
+  </body>
+</html>
